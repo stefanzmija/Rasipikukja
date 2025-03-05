@@ -25,7 +25,8 @@ urlpatterns = [
     path('logout/', custom_logout_view, name='logout'),
     path('repairmen/', repairmen_view, name='repairmen_all'),
     path('repairmen/<str:category>/', repairmen_view, name='repairmen_by_category'),
-    path('rate/<str:repairman_email>/', rate_repairman_view, name='rate_repairman'),
+path('rate/<str:repairman_email>/', rate_repairman_view, name='rate_repairman'),
+
     path('repairman/<str:repairman_email>/', repairman_profile_view, name='repairman_profile'),
     path('myprofile/', my_profile_view, name='my_profile'),
     path('add-problem/', add_problem_view, name='add_problem'),

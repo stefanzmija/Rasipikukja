@@ -115,66 +115,27 @@ def repairmen_view(request, category=None):
         "selected_category": category,
         "user_type": user_type,
     })
-
 def rate_repairman_view(request, repairman_email):
-    # Ensure the user is logged in.
-    if not request.user.is_authenticated:
-        messages.error(request, "You must be logged in to rate a repairman.")
-        return redirect("login")
-    client_email = request.user.email
-
-    # Fetch client profile.
-    client_profile_response = supabase.table("profiles").select("*").eq("email", client_email).execute()
-    if not client_profile_response.data:
-        messages.error(request, "Your profile was not found. Please contact support.")
-        return redirect("repairmen_all")
-    client_profile = client_profile_response.data[0]
-    if client_profile.get("user_type") != "client":
-        messages.error(request, "Only clients can rate repairmen.")
-        return redirect("repairmen_all")
-    if client_email == repairman_email:
-        messages.error(request, "You cannot rate yourself.")
-        return redirect("repairmen_all")
-    existing_rating_response = supabase.table("reviews").select("*")\
-        .eq("repairman_email", repairman_email)\
-        .eq("client_email", client_email).execute()
-    if existing_rating_response.data:
-        messages.error(request, "You have already rated this repairman.")
-        return redirect("repairmen_all")
     if request.method == "POST":
-        rating_str = request.POST.get("rating", "0")
-        comment = request.POST.get("comment", "")
-        try:
-            rating = int(rating_str)
-        except ValueError:
-            rating = 0
-        review_data = {
+        rating = request.POST.get("rating")
+        review = request.POST.get("review")
+
+        if not rating or not review:
+            messages.error(request, "Please provide both rating and review.")
+            return redirect("rate_repairman", repairman_email=repairman_email)
+
+        supabase.table("ratings").insert({
             "repairman_email": repairman_email,
-            "client_email": client_email,
+            "user_email": request.user.email,
             "rating": rating,
-            "comment": comment,
-        }
-        review_response = supabase.table("reviews").insert(review_data).execute()
-        print("Review insert response:", review_response)
-        reviews_response = supabase.table("reviews").select("rating")\
-            .eq("repairman_email", repairman_email).execute()
-        reviews = reviews_response.data if reviews_response.data else []
-        if reviews:
-            total_rating = sum(int(r["rating"]) for r in reviews)
-            avg_rating = total_rating / len(reviews)
-        else:
-            avg_rating = 0.0
-        avg_rating = round(avg_rating, 1)
-        if avg_rating > 5.0:
-            avg_rating = 5.0
-        update_response = supabase.table("profiles").update({"rating": avg_rating})\
-            .eq("email", repairman_email).execute()
-        print("Profile update response:", update_response)
-        messages.success(request, "Thank you for your review!")
+            "review": review,
+            "created_at": datetime.utcnow().isoformat()
+        }).execute()
+
+        messages.success(request, "Your rating has been submitted.")
         return redirect("repairmen_all")
-    else:
-        context = {"repairman_email": repairman_email}
-        return render(request, "rate_repairman.html", context)
+
+    return render(request, "rate_repairman.html", {"repairman_email": repairman_email})
 
 def repairman_profile_view(request, repairman_email):
     profile_response = supabase.table("profiles").select("*").eq("email", repairman_email).execute()
