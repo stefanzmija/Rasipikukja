@@ -1,7 +1,7 @@
-{% load static %}  <!-- Load the static tag -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    {% load static %}
     <meta charset="UTF-8" />
     <title>RepairHub</title>
     <!-- Bootstrap CSS -->
@@ -41,15 +41,9 @@
                 <li class="nav-item">
                   <a href="{% url 'add_problem' %}" class="nav-link text-dark fw-medium">Add Problem</a>
                 </li>
-                <li class="nav-item">
-                  <a href="{% url 'my_problems' %}" class="nav-link text-dark fw-medium">My Problems</a>
-                </li>
               {% elif request.session.user_type|default:"client" == "repairman" %}
                 <li class="nav-item">
                   <a href="{% url 'available_problems' %}" class="nav-link text-dark fw-medium">Available Problems</a>
-                </li>
-                <li class="nav-item">
-                  <a href="{% url 'my_assigned_problems' %}" class="nav-link text-dark fw-medium">My Assigned Problems</a>
                 </li>
               {% endif %}
               <li class="nav-item">
@@ -68,7 +62,6 @@
       </div>
     </nav>
 
-    <!-- Main Content -->
     {% block content %}{% endblock %}
 
     <!-- Bootstrap JS Bundle (with Popper) -->

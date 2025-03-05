@@ -15,8 +15,6 @@ from repairs.views import (
     submit_bid_view,
     select_repairman_view,
     pending_problems_view,
-    my_problems_view,
-    my_assigned_problems_view,  # New view
 )
 
 urlpatterns = [
@@ -32,10 +30,8 @@ urlpatterns = [
     path('myprofile/', my_profile_view, name='my_profile'),
     path('add-problem/', add_problem_view, name='add_problem'),
     path('available-problems/', available_problems_view, name='available_problems'),
-    path('problem/<int:problem_id>/', problem_detail_view, name='problem_detail'),
+    path("problem/<int:problem_id>/", problem_detail_view, name="problem_detail"),
     path('submit-bid/<int:problem_id>/', submit_bid_view, name='submit_bid'),
-    path('select-repairman/<int:problem_id>/<str:repairman_email>/', select_repairman_view, name='select_repairman'),
+    path('select-repairman/<int:problem_id>/', select_repairman_view, name='select_repairman'),
     path('pending-problems/', pending_problems_view, name='pending_problems'),
-    path('my-problems/', my_problems_view, name='my_problems'),
-    path('my-assigned-problems/', my_assigned_problems_view, name='my_assigned_problems'),  # New URL
 ]

@@ -4,13 +4,6 @@
 {% block content %}
 <div class="container mt-5">
   <h2 class="text-center">Add a New Problem</h2>
-  {% if messages %}
-    {% for message in messages %}
-      <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %}">
-        {{ message }}
-      </div>
-    {% endfor %}
-  {% endif %}
   <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="mb-3">
@@ -24,15 +17,6 @@
     <div class="mb-3">
       <label for="location" class="form-label">Location:</label>
       <input type="text" name="location" id="location" class="form-control" required>
-    </div>
-    <div class="mb-3">
-      <label for="category" class="form-label">Category:</label>
-      <select name="category" id="category" class="form-control" required>
-        <option value="" disabled selected>Select a category</option>
-        {% for category in categories %}
-          <option value="{{ category }}">{{ category }}</option>
-        {% endfor %}
-      </select>
     </div>
     <div class="mb-3">
       <label for="description" class="form-label">Problem Description:</label>
