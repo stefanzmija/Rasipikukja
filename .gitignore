@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+*.env
+staticfiles/
+db.sqlite3
+supabase_client.py  # Add this if it has your Supabase keys
