@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2 class="text-center">Add a New Problem</h2>
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="name" class="form-label">Your Name:</label>
+      <input type="text" name="name" id="name" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label for="contact" class="form-label">Contact Info:</label>
+      <input type="text" name="contact" id="contact" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label for="location" class="form-label">Location:</label>
+      <input type="text" name="location" id="location" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label for="category" class="form-label">Category:</label>
+      <select name="category" id="category" class="form-control" required>
+        <option value="" disabled selected>Select a category</option>
+        {% for category in categories %}
+          <option value="{{ category }}">{{ category }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="mb-3">
+      <label for="description" class="form-label">Problem Description:</label>
+      <textarea name="description" id="description" class="form-control" rows="3"></textarea>
+    </div>
+    <div class="mb-3">
+      <label for="photo" class="form-label">Photo (PNG only):</label>
+      <input type="file" name="photo" id="photo" class="form-control" accept="image/png">
+    </div>
+    <button type="submit" class="btn btn-primary">Submit Problem</button>
+  </form>
+</div>
+{% endblock %}

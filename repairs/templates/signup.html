@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2 class="text-center">Sign Up</h2>
+  <form method="POST">
+    {% csrf_token %}
+    <!-- Name Field -->
+    <div class="mb-3">
+      <label for="name" class="form-label">Full Name:</label>
+      <input type="text" name="name" id="name" class="form-control" required>
+    </div>
+
+    <!-- Email Field -->
+    <div class="mb-3">
+      <label for="email" class="form-label">Email:</label>
+      <input type="email" name="email" id="email" class="form-control" required>
+    </div>
+
+    <!-- Password Field -->
+    <div class="mb-3">
+      <label for="password" class="form-label">Password:</label>
+      <input type="password" name="password" id="password" class="form-control" required>
+    </div>
+
+    <!-- User Type Radio Buttons -->
+    <div class="mb-3">
+      <label class="form-label">I am a:</label>
+      <div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="user_type" id="client" value="client" checked>
+          <label class="form-check-label" for="client">Client</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="user_type" id="repairman" value="repairman">
+          <label class="form-check-label" for="repairman">Repairman</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Repair Category Dropdown (Hidden by Default) -->
+    <div class="mb-3" id="repair_category_field" style="display: none;">
+      <label for="repair_category" class="form-label">Repair Category:</label>
+      <select name="repair_category" id="repair_category" class="form-select">
+        <option value="Cleaner">Cleaner</option>
+        <option value="Handyman">Handyman</option>
+        <option value="Mover">Mover</option>
+        <option value="Painter">Painter</option>
+        <option value="Plumber">Plumber</option>
+        <option value="Electrician">Electrician</option>
+        <option value="Assembler">Assembler</option>
+        <option value="Gardener">Gardener</option>
+      </select>
+    </div>
+
+    <!-- Submit Button -->
+    <button type="submit" class="btn btn-primary">Sign Up</button>
+  </form>
+</div>
+
+<script>
+  // Show/hide repair_category field based on user_type selection
+  document.addEventListener('DOMContentLoaded', function() {
+    const userTypeRadios = document.querySelectorAll('input[name="user_type"]');
+    const repairCategoryField = document.getElementById('repair_category_field');
+
+    userTypeRadios.forEach(radio => {
+      radio.addEventListener('change', function() {
+        if (this.value === 'repairman') {
+          repairCategoryField.style.display = 'block';
+        } else {
+          repairCategoryField.style.display = 'none';
+        }
+      });
+    });
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5 text-center">
+  <h2 class="slogan mb-2">Get Help, Gain Happiness</h2>
+  <h1 class="title mb-5">Popular Services</h1>
+
+  <!-- Services Grid -->
+  <div class="row justify-content-center">
+    {% for service in services %}
+      <div class="col-lg-2 col-md-3 col-sm-4 col-6 d-flex justify-content-center mb-4">
+        <a href="{% url 'repairmen_by_category' service.name|lower %}" class="text-decoration-none">
+          <div class="service-card">
+            <img src="{{ service.icon_url }}" alt="{{ service.name }}" class="service-icon">
+            <h6>{{ service.name }}</h6>
+          </div>
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+
+  <!-- Only show 'Add Problem' if user is authenticated AND is a client -->
+  {% if user.is_authenticated and request.session.user_type|default:"client" == "client" %}
+    <div class="mt-4">
+      <a href="{% url 'add_problem' %}" class="btn btn-primary">Add Problem</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

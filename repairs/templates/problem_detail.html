@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2 class="text-center">Problem Details</h2>
+
+  <!-- Problem Details -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <h5 class="card-title">{{ problem.name }}</h5>
+      <p class="card-text">{{ problem.description }}</p>
+      <p class="card-text"><small class="text-muted">Location: {{ problem.location }}</small></p>
+      <p class="card-text"><small class="text-muted">Category: {{ problem.category }}</small></p>
+      <p class="card-text"><small class="text-muted">Posted on: {{ problem.created_at }}</small></p>
+
+      <!-- Assigned Repairman (if assigned) -->
+      {% if assigned_repairman %}
+        <p class="card-text"><small class="text-muted">Assigned Repairman: {{ assigned_repairman }}</small></p>
+      {% endif %}
+
+      <!-- Photo (if available) -->
+      {% if problem.photo_url %}
+        <img src="{{ problem.photo_url }}" alt="Problem Photo" class="img-fluid mb-3">
+      {% endif %}
+
+      <!-- Contact Information (for clients) -->
+      {% if request.session.user_type == 'client' %}
+        <p class="card-text"><small class="text-muted">Contact: {{ problem.contact }}</small></p>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Bids Section -->
+  <h3 class="mt-5">Bids</h3>
+  {% if bids %}
+    <div class="list-group">
+      {% for bid in bids %}
+        <div class="list-group-item">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h5 class="mb-1">{{ bid.repairman_email }}</h5>
+              <p class="mb-1">Amount: ${{ bid.amount }}</p>
+              <small>Submitted on: {{ bid.created_at }}</small>
+            </div>
+            <div>
+              <!-- View Repairman Profile Button -->
+              <a href="{% url 'repairman_profile' bid.repairman_email %}" class="btn btn-info btn-sm">View Profile</a>
+
+              <!-- Select Repairman Button (for clients) -->
+              {% if request.session.user_type == 'client' and not assigned_repairman %}
+                <a href="{% url 'select_repairman' problem.id bid.repairman_email %}" class="btn btn-success btn-sm">Select Repairman</a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="alert alert-info">No bids have been submitted for this problem yet.</div>
+  {% endif %}
+</div>
+{% endblock %}

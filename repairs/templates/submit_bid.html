@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+  <h2 class="text-center">Submit Bid</h2>
+  <form method="POST">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="amount" class="form-label">Bid Amount:</label>
+      <input type="number" name="amount" id="amount" class="form-control" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit Bid</button>
+  </form>
+</div>
+{% endblock %}

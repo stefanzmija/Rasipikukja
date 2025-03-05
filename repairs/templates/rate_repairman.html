@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2 class="text-center">Rate {{ repairman_email }}</h2>
+  <form method="post">
+    {% csrf_token %}
+    <!-- Star-based rating selection -->
+    <div class="star-rating mb-3">
+      <input type="radio" id="star5" name="rating" value="5" required />
+      <label for="star5" title="5 stars">★</label>
+
+      <input type="radio" id="star4" name="rating" value="4" />
+      <label for="star4" title="4 stars">★</label>
+
+      <input type="radio" id="star3" name="rating" value="3" />
+      <label for="star3" title="3 stars">★</label>
+
+      <input type="radio" id="star2" name="rating" value="2" />
+      <label for="star2" title="2 stars">★</label>
+
+      <input type="radio" id="star1" name="rating" value="1" />
+      <label for="star1" title="1 star">★</label>
+    </div>
+
+    <div class="mb-3">
+      <label for="comment" class="form-label">Comment (optional):</label>
+      <textarea name="comment" id="comment" class="form-control" rows="3"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit Review</button>
+  </form>
+</div>
+
+<style>
+  .star-rating {
+    direction: rtl;
+    display: inline-flex;
+    font-size: 2rem;
+  }
+  .star-rating input[type="radio"] {
+    display: none;
+  }
+  .star-rating label {
+    color: #ccc;
+    cursor: pointer;
+    transition: color 0.2s;
+    margin: 0 2px;
+  }
+  .star-rating input[type="radio"]:checked ~ label {
+    color: #f5b301;
+  }
+  .star-rating label:hover,
+  .star-rating label:hover ~ label {
+    color: #f5b301;
+  }
+</style>
+{% endblock %}

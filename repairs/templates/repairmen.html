@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2 class="text-center mb-4">Repairmen</h2>
+
+  <!-- Category Filter Options -->
+  <div class="text-center mb-4">
+    <a href="{% url 'repairmen_all' %}" class="btn btn-outline-primary me-2">All</a>
+    <a href="{% url 'repairmen_by_category' 'plumber' %}" class="btn btn-outline-primary me-2">Plumber</a>
+    <a href="{% url 'repairmen_by_category' 'electrician' %}" class="btn btn-outline-primary me-2">Electrician</a>
+    <a href="{% url 'repairmen_by_category' 'gardener' %}" class="btn btn-outline-primary me-2">Gardener</a>
+    <a href="{% url 'repairmen_by_category' 'cleaner' %}" class="btn btn-outline-primary me-2">Cleaner</a>
+    <a href="{% url 'repairmen_by_category' 'handyman' %}" class="btn btn-outline-primary me-2">Handyman</a>
+    <a href="{% url 'repairmen_by_category' 'mover' %}" class="btn btn-outline-primary me-2">Mover</a>
+    <a href="{% url 'repairmen_by_category' 'painter' %}" class="btn btn-outline-primary me-2">Painter</a>
+    <a href="{% url 'repairmen_by_category' 'assembler' %}" class="btn btn-outline-primary me-2">Assembler</a>
+  </div>
+
+  {% if repairmen %}
+    <div class="row">
+      {% for repairman in repairmen %}
+        <div class="col-md-4 mb-3">
+          <div class="card shadow-sm">
+            <div class="card-body">
+              <h5 class="card-title">{{ repairman.name|default:repairman.email }}</h5>
+              <p class="card-text">
+                Category: {{ repairman.repair_category|default:"N/A" }}<br>
+                Rating: {{ repairman.rating|default:"0" }}
+              </p>
+              <div class="d-flex justify-content-between">
+                {% if user.is_authenticated and request.session.user_type|default:"client" == "client" %}
+                  <a href="{% url 'rate_repairman' repairman.email %}" class="btn btn-sm btn-outline-primary">
+                    Rate this Repairman
+                  </a>
+                {% endif %}
+                <a href="{% url 'repairman_profile' repairman.email %}" class="btn btn-sm btn-outline-secondary">
+                  View Profile
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="text-center">No repairmen found for this category.</p>
+  {% endif %}
+</div>
+{% endblock %}

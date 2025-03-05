@@ -1,0 +1,13 @@
+{% for problem in pending_problems %}
+  <div class="card mb-3">
+    <div class="card-body">
+      <h5 class="card-title">{{ problem.name }}</h5>
+      <p class="card-text">{{ problem.description }}</p>
+      <p class="card-text"><small class="text-muted">Location: {{ problem.location }}</small></p>
+      {% if request.session.user_type == 'client' %}
+        <p class="card-text">Repairman: {{ problem.repairman_email }}</p>
+        <p class="card-text">Contact: {{ problem.contact }}</p>
+      {% endif %}
+    </div>
+  </div>
+{% endfor %}
