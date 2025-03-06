@@ -136,42 +136,46 @@ def repairmen_view(request, category=None):
         "user_type": user_type,
     })
 
+
 def rate_repairman_view(request, repairman_email):
     """
     Allows a client to submit a review for a repairman.
     """
-    if request.method == 'POST':
-        # Extract data from POST request
-        rating = request.POST.get('rating')
-        comment = request.POST.get('comment', '')  # Optional field
+    if request.method == "POST":
+        rating = request.POST.get("rating")
+        comment = request.POST.get("comment", "")  # Optional field
 
         # Validate rating (ensure it's between 1 and 5)
         try:
             rating = int(rating)
             if rating < 1 or rating > 5:
                 messages.error(request, "Invalid rating. Please select a value between 1 and 5.")
-                return redirect('rate_repairman', repairman_email=repairman_email)
+                return redirect("rate_repairman", repairman_email=repairman_email)
         except ValueError:
             messages.error(request, "Invalid rating format.")
-            return redirect('rate_repairman', repairman_email=repairman_email)
+            return redirect("rate_repairman", repairman_email=repairman_email)
 
-        # Insert review into Supabase 'reviews' table
-        response = supabase.table('reviews').insert({
-            'uuid': str(uuid.uuid4()),  # Generate a unique identifier for the review
-            'repairman_email': repairman_email,
-            'client_email': request.user.email,  # Assuming request.user.email exists
-            'rating': rating,
-            'comment': comment,
-            'created_at': None  # Supabase auto-generates this if left as NULL
+        # Insert review into Supabase 'reviews' table.
+        # Your table has columns: id (uuid), repairman_email, client_email, rating, comment, created_at
+        response = supabase.table("reviews").insert({
+            "repairman_email": repairman_email,
+            "client_email": request.user.email,
+            "rating": rating,
+            "comment": comment,
         }).execute()
 
-        if response.status_code == 201:  # Check if insertion was successful
+        # Instead of accessing response.status_code, safely get error attribute.
+        response_error = getattr(response, "error", None)
+        if response_error is None:
             messages.success(request, "Review submitted successfully!")
-            return redirect('repairman_profile', repairman_email=repairman_email)
+            return redirect("repairman_profile", repairman_email=repairman_email)
         else:
             messages.error(request, "Failed to submit review. Please try again.")
+            print("Insert error:", response_error)
+            return redirect("rate_repairman", repairman_email=repairman_email)
 
-    return render(request, 'rate_repairman.html', {'repairman_email': repairman_email})
+    # For GET requests, render the rate_repairman.html template.
+    return render(request, "rate_repairman.html", {"repairman_email": repairman_email})
 
 def repairman_profile_view(request, repairman_email):
     profile_response = supabase.table("profiles").select("*").eq("email", repairman_email).execute()

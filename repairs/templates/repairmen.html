@@ -36,7 +36,7 @@
             <div class="card-body text-center">
               <h5 class="card-title" style="color: #007bff;">{{ repairman.name|default:repairman.email }}</h5>
               <p class="card-text text-muted">
-                <small>Category: {{ repairman.repair_category|default:"N/A" }}</small><br />
+                <small>Category: {{ repairman.repair_category|default:"N/A"|capfirst  }}</small><br />
                 <small>Rating:
                   <span class="rating-container">
                     <span class="rating-stars">{% include 'rating_stars.html' with rating=repairman.rating|default:0 %}</span>
