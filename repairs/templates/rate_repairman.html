@@ -3,36 +3,46 @@
 
 {% block content %}
 <div class="container mt-5">
-  <h2 class="text-center">Rate {{ repairman_email }}</h2>
-  <form method="post">
-    {% csrf_token %}
-    <!-- Star-based rating selection -->
-    <div class="star-rating mb-3">
-      <input type="radio" id="star5" name="rating" value="5" required />
-      <label for="star5" title="5 stars">★</label>
+  <h2 class="text-center mb-5 text-uppercase font-weight-bold text-gradient">Rate {{ repairman_email }}</h2>
 
-      <input type="radio" id="star4" name="rating" value="4" />
-      <label for="star4" title="4 stars">★</label>
+  <div class="row justify-content-center">
+    <div class="col-md-6 card-item">
+      <div class="card modern-card shadow-sm border-0 rounded overflow-hidden">
+        <div class="card-body text-center">
+          <form method="post">
+            {% csrf_token %}
+            <!-- Star-based rating selection -->
+            <div class="star-rating mb-3">
+              <input type="radio" id="star5" name="rating" value="5" required />
+              <label for="star5" title="5 stars">★</label>
 
-      <input type="radio" id="star3" name="rating" value="3" />
-      <label for="star3" title="3 stars">★</label>
+              <input type="radio" id="star4" name="rating" value="4" />
+              <label for="star4" title="4 stars">★</label>
 
-      <input type="radio" id="star2" name="rating" value="2" />
-      <label for="star2" title="2 stars">★</label>
+              <input type="radio" id="star3" name="rating" value="3" />
+              <label for="star3" title="3 stars">★</label>
 
-      <input type="radio" id="star1" name="rating" value="1" />
-      <label for="star1" title="1 star">★</label>
+              <input type="radio" id="star2" name="rating" value="2" />
+              <label for="star2" title="2 stars">★</label>
+
+              <input type="radio" id="star1" name="rating" value="1" />
+              <label for="star1" title="1 star">★</label>
+            </div>
+
+            <div class="mb-3">
+              <label for="comment" class="form-label">Comment (optional):</label>
+              <textarea name="comment" id="comment" class="form-control comment-box" rows="3"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary-gradient">Submit Review</button>
+          </form>
+        </div>
+      </div>
     </div>
-
-    <div class="mb-3">
-      <label for="comment" class="form-label">Comment (optional):</label>
-      <textarea name="comment" id="comment" class="form-control" rows="3"></textarea>
-    </div>
-    <button type="submit" class="btn btn-primary">Submit Review</button>
-  </form>
+  </div>
 </div>
 
 <style>
+  /* Keep the star rating styles but ensure they don’t conflict with modern-card */
   .star-rating {
     direction: rtl;
     display: inline-flex;

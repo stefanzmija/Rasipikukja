@@ -1,46 +1,90 @@
-/* Import a modern Google Font */
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
-
-/* RESET & BASE */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+/* General Reset and Base Styles */
 body {
   font-family: 'Roboto', sans-serif;
-  background-color: #f8f9fa; /* Light gray background */
+  background-color: #f5f7fa;
+  color: #333;
 }
 
-/* NAVBAR OVERRIDES */
-.navbar {
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-.navbar-brand {
+/* Gradient Text for Heading and Navbar Brand */
+.text-gradient {
+  background: linear-gradient(90deg, #007bff, #00d4ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   font-weight: 700;
-  color: #333 !important;
 }
-.navbar-nav .nav-link {
-  color: #333 !important;
-  margin: 0 0.75rem;
+
+/* Modern Navbar Styling (Blue Theme with Montserrat Font) */
+.navbar {
+  padding: 1rem 0;
+  background-color: #ffffff !important; /* White background */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  transition: all 0.3s ease; /* Smooth transitions */
+}
+
+.navbar-brand-text, .navbar-link {
+  font-family: 'Montserrat', sans-serif; /* Bold, modern font */
+  font-weight: 700; /* Bold weight for emphasis */
+}
+
+.navbar-brand {
+  font-size: 1.5rem;
+  color: #007bff !important; /* Blue for brand */
   transition: color 0.3s ease;
 }
-.navbar-nav .nav-link:hover {
-  color: #007bff !important;
+
+.navbar-brand:hover {
+  color: #0056b3 !important; /* Darker blue on hover */
 }
-.btn-outline-primary {
-  border-color: #007bff;
-  color: #007bff;
-  font-weight: 500;
+
+.navbar-link {
+  font-size: 1rem;
+  color: #007bff !important; /* Blue for links */
+  padding: 0.5rem 1rem;
+  transition: color 0.3s ease, transform 0.3s ease;
 }
-.btn-outline-primary:hover {
-  background-color: #007bff;
-  color: #fff;
+
+.navbar-link:hover {
+  color: #0056b3 !important; /* Darker blue on hover */
+  transform: translateY(-2px); /* Slight lift on hover */
 }
-.btn-primary {
-  background-color: #007bff;
-  border-color: #007bff;
-  font-weight: 500;
+
+.navbar-toggler {
+  border: none;
+  padding: 0.25rem 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.navbar-toggler:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(0, 123, 255, 0.8)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+  transition: background-image 0.3s ease;
+}
+
+.navbar-toggler:hover .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(0, 123, 255, 1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/* Ensure navbar links are spaced evenly on mobile */
+@media (max-width: 768px) {
+  .navbar-nav {
+    margin-top: 0.5rem;
+  }
+  .navbar-link {
+    padding: 0.5rem 0.75rem;
+  }
+  .navbar-brand {
+    font-size: 1.25rem;
+  }
+}
+
+/* Repairmen Container Styling */
+.repairmen-container {
+  background-color: #f0f8ff; /* Light blue background */
+  padding: 20px 0;
 }
 
 /* SLOGAN & TITLES */
@@ -50,13 +94,14 @@ body {
   color: #333;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
+
 .title {
   font-size: 1.5rem;
   font-weight: 600;
   color: #666;
 }
 
-/* SERVICE CARDS */
+/* SERVICE CARDS (Original Design) */
 .service-card {
   width: 120px;
   height: 120px;
@@ -70,18 +115,363 @@ body {
   transition: transform 0.3s, box-shadow 0.3s;
   cursor: pointer;
 }
+
 .service-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
+
 .service-icon {
   width: 50px;
   height: 50px;
+  object-fit: contain; /* Ensure icons fit within 50px x 50px without cropping */
   margin-bottom: 0.5rem;
 }
+
 .service-card h6 {
   font-size: 0.9rem;
   color: #333;
   font-weight: 500;
   margin: 0;
+}
+
+/* Button Styling (Original Design) */
+.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+  font-weight: 500;
+  color: #fff; /* Ensure text is white */
+  padding: 0.375rem 0.75rem; /* Bootstrap default padding */
+  border-radius: 0.25rem; /* Bootstrap default radius */
+}
+
+.btn-primary:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+  border-color: #0056b3;
+  color: #fff;
+}
+
+/* Modern Card Styling (Blue Theme) */
+.modern-card {
+  background-color: #fff;
+  border-radius: 15px;
+  overflow: hidden;
+  position: relative;
+  border: 2px solid #cce5ff !important; /* Light blue border */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.modern-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.modern-card .card-img-top {
+  height: 200px;
+  transition: opacity 0.3s ease;
+}
+
+.modern-card:hover .card-img-top {
+  opacity: 0.8;
+}
+
+.modern-card .card-body {
+  padding: 15px; /* Increased padding for better spacing */
+  background-color: #fff;
+}
+
+.modern-card .card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #007bff !important; /* Blue title */
+}
+
+.modern-card .card-text {
+  font-size: 0.9rem;
+}
+
+/* Modern List Item Styling (Blue Theme) */
+.modern-list-item {
+  background-color: #fff;
+  border: 1px solid #cce5ff; /* Light blue border */
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.modern-list-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Problem Photo Styling */
+.problem-photo {
+  width: 300px; /* Fixed width */
+  height: 200px; /* Fixed height */
+  object-fit: cover; /* Maintain aspect ratio, crop if necessary */
+  border-radius: 8px; /* Match card rounding */
+  display: block; /* Ensure block-level to avoid inline spacing issues */
+  margin: 0 auto; /* Center the image horizontally */
+}
+
+/* Form Control Styling (Blue Theme) */
+.form-control {
+  background-color: #fff;
+  border: 1px solid #cce5ff; /* Light blue border */
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-control:focus {
+  border-color: #007bff; /* Blue border on focus */
+  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2); /* Enhanced shadow on focus */
+  outline: none;
+}
+
+.form-label {
+  font-weight: 600;
+  color: #007bff; /* Blue labels */
+}
+
+.form-check-label {
+  color: #333; /* Dark gray for radio labels */
+}
+
+/* Form Select Styling (Blue Theme) */
+.form-select {
+  background-color: #fff;
+  border: 1px solid #cce5ff; /* Light blue border */
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-select:focus {
+  border-color: #007bff; /* Blue border on focus */
+  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2); /* Enhanced shadow on focus */
+  outline: none;
+}
+
+/* Gradient Button (Blue Theme) */
+.btn-primary-gradient {
+  background: linear-gradient(90deg, #007bff, #00d4ff); /* Blue gradient */
+  border: none;
+  color: #fff;
+  padding: 8px 20px;
+  border-radius: 25px;
+  transition: all 0.3s ease, transform 0.3s ease;
+}
+
+.btn-primary-gradient:hover {
+  background: linear-gradient(90deg, #0056b3, #00b7ff); /* Darker blue gradient */
+  box-shadow: 0 4px 15px rgba(0, 123, 255, 0.4);
+  transform: translateY(-2px);
+}
+
+/* Outline Button (Dark Theme) */
+.btn-outline-dark {
+  border: 2px solid #333;
+  color: #333;
+  padding: 8px 20px;
+  border-radius: 25px;
+  transition: all 0.3s ease, transform 0.3s ease;
+}
+
+.btn-outline-dark:hover {
+  background-color: #333;
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+/* Outline Primary Button for Filters */
+.btn-outline-primary {
+  border: 2px solid #007bff;
+  color: #007bff;
+  padding: 8px 20px;
+  border-radius: 25px;
+  transition: all 0.3s ease, transform 0.3s ease;
+}
+
+.btn-outline-primary:hover {
+  background-color: #007bff;
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+/* Problem Assigned Checkmark and Text Styling */
+.problem-assigned-checkmark {
+  font-size: 1.2rem; /* Slightly larger for visibility */
+  color: #28a745; /* Bootstrap success green */
+  vertical-align: middle; /* Align with text */
+}
+
+.problem-assigned-text {
+  font-size: 0.9rem; /* Match card text size */
+  color: #28a745; /* Bootstrap success green */
+  font-weight: 500; /* Slightly bold for emphasis */
+}
+
+/* Rating Container and Number Styling */
+.rating-container {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px; /* Space between stars and number */
+}
+
+.rating-number {
+  color: #333; /* Dark gray for contrast */
+  font-size: 0.9rem; /* Match the size of the card-text */
+  font-weight: 500; /* Slightly bold for visibility */
+}
+
+/* Rating Stars */
+.rating-stars {
+  color: #f1c40f !important; /* Gold color for stars */
+}
+
+/* Alert Styling (Blue Theme) */
+.alert {
+  border-radius: 8px;
+  margin-bottom: 15px;
+  border: 1px solid #cce5ff; /* Light blue border for consistency */
+}
+
+.alert-info {
+  background-color: #cce5ff; /* Light blue for info */
+  color: #004085; /* Dark blue text */
+  border-color: #b8daff; /* Blue border */
+}
+
+/* No Results Section */
+.text-muted.fs-5 {
+  font-size: 1.25rem;
+}
+
+/* Card Container Animation */
+.card-container {
+  opacity: 0;
+  animation: fadeIn 1s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Adjustments for Navbar, Cards, and Photos */
+@media (max-width: 768px) {
+  .text-gradient {
+    font-size: 2rem;
+  }
+  .btn-filter {
+    padding: 6px 15px;
+    font-size: 0.85rem;
+  }
+  .modern-card .card-title {
+    font-size: 1.1rem;
+  }
+  .modern-card {
+    margin-bottom: 20px;
+  }
+  .navbar-brand {
+    font-size: 1.25rem;
+  }
+  .repairmen-container h2 {
+    font-size: 1.5rem;
+  }
+  .service-card {
+    width: 100px; /* Smaller width on mobile */
+    height: 100px; /* Smaller height on mobile */
+  }
+  .service-icon {
+    width: 40px; /* Smaller icon on mobile */
+    height: 40px;
+  }
+  .problem-photo {
+    width: 250px; /* Smaller width on mobile */
+    height: 150px; /* Smaller height on mobile */
+  }
+  .modern-list-item {
+    margin-bottom: 10px;
+  }
+  .problem-assigned-checkmark {
+    font-size: 1rem; /* Smaller checkmark on mobile */
+  }
+  .problem-assigned-text {
+    font-size: 0.8rem; /* Smaller text on mobile */
+  }
+}
+
+/* Ensure smooth transitions for all animated elements */
+* {
+  transition: all 0.3s ease;
+}
+
+/* Star Rating Styles */
+.star-rating {
+  direction: rtl;
+  display: inline-flex;
+  font-size: 2rem;
+}
+
+.star-rating input[type="radio"] {
+  display: none;
+}
+
+.star-rating label {
+  color: #ccc;
+  cursor: pointer;
+  transition: color 0.2s;
+  margin: 0 2px;
+}
+
+.star-rating input[type="radio"]:checked ~ label {
+  color: #f5b301;
+}
+
+.star-rating label:hover,
+.star-rating label:hover ~ label {
+  color: #f5b301;
+}
+
+/* Comment Box Styling */
+.comment-box {
+  border: 2px solid #cce5ff;
+  border-radius: 8px;
+  transition: border-color 0.3s ease;
+}
+
+.comment-box:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.navbar-link {
+    font-size: 1rem;
+    color: #007bff !important;
+    padding: 0.5rem 1rem;
+    transition: color 0.3s ease, transform 0.3s ease;
+    position: relative;
+}
+.navbar-link::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 0;
+    height: 2px;
+    background-color: #007bff;
+    transition: width 0.3s ease, left 0.3s ease;
+}
+.navbar-link:hover::after {
+    width: 100%;
+    left: 0;
 }

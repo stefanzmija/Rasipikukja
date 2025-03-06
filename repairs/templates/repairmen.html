@@ -1,41 +1,56 @@
 {% extends "base.html" %}
 {% load static %}
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-  <h2 class="text-center mb-4">Repairmen</h2>
+<div class="container mt-5 repairmen-container" style="background-color: #f0f8ff;">
+  <h2 class="text-center mb-5 text-uppercase font-weight-bold" style="color: #007bff;">Find Your Repairmen</h2>
 
   <!-- Category Filter Options -->
-  <div class="text-center mb-4">
-    <a href="{% url 'repairmen_all' %}" class="btn btn-outline-primary me-2">All</a>
-    <a href="{% url 'repairmen_by_category' 'plumber' %}" class="btn btn-outline-primary me-2">Plumber</a>
-    <a href="{% url 'repairmen_by_category' 'electrician' %}" class="btn btn-outline-primary me-2">Electrician</a>
-    <a href="{% url 'repairmen_by_category' 'gardener' %}" class="btn btn-outline-primary me-2">Gardener</a>
-    <a href="{% url 'repairmen_by_category' 'cleaner' %}" class="btn btn-outline-primary me-2">Cleaner</a>
-    <a href="{% url 'repairmen_by_category' 'handyman' %}" class="btn btn-outline-primary me-2">Handyman</a>
-    <a href="{% url 'repairmen_by_category' 'mover' %}" class="btn btn-outline-primary me-2">Mover</a>
-    <a href="{% url 'repairmen_by_category' 'painter' %}" class="btn btn-outline-primary me-2">Painter</a>
-    <a href="{% url 'repairmen_by_category' 'assembler' %}" class="btn btn-outline-primary me-2">Assembler</a>
+  <div class="text-center mb-5 filter-buttons">
+    <a href="{% url 'repairmen_all' %}" class="btn btn-outline-primary">All</a>
+    <a href="{% url 'repairmen_by_category' 'plumber' %}" class="btn btn-outline-primary">Plumber</a>
+    <a href="{% url 'repairmen_by_category' 'electrician' %}" class="btn btn-outline-primary">Electrician</a>
+    <a href="{% url 'repairmen_by_category' 'gardener' %}" class="btn btn-outline-primary">Gardener</a>
+    <a href="{% url 'repairmen_by_category' 'cleaner' %}" class="btn btn-outline-primary">Cleaner</a>
+    <a href="{% url 'repairmen_by_category' 'handyman' %}" class="btn btn-outline-primary">Handyman</a>
+    <a href="{% url 'repairmen_by_category' 'mover' %}" class="btn btn-outline-primary">Mover</a>
+    <a href="{% url 'repairmen_by_category' 'painter' %}" class="btn btn-outline-primary">Painter</a>
+    <a href="{% url 'repairmen_by_category' 'assembler' %}" class="btn btn-outline-primary">Assembler</a>
   </div>
 
   {% if repairmen %}
-    <div class="row">
+    <div class="row row-cols-1 row-cols-md-3 g-4 card-container">
       {% for repairman in repairmen %}
-        <div class="col-md-4 mb-3">
-          <div class="card shadow-sm">
-            <div class="card-body">
-              <h5 class="card-title">{{ repairman.name|default:repairman.email }}</h5>
-              <p class="card-text">
-                Category: {{ repairman.repair_category|default:"N/A" }}<br>
-                Rating: {{ repairman.rating|default:"0" }}
+        <div class="col card-item">
+          <div class="card modern-card shadow-sm pb-2 rounded overflow-hidden">
+            <div class="card-img-top" style="
+              background-image: url('{% static 'images/' %}{{ repairman.repair_category }}.jpg');
+              background-size: cover;
+              background-position: center;
+              height: 20px;
+
+            "></div>
+            <div class="card-body text-center">
+              <h5 class="card-title" style="color: #007bff;">{{ repairman.name|default:repairman.email }}</h5>
+              <p class="card-text text-muted">
+                <small>Category: {{ repairman.repair_category|default:"N/A" }}</small><br />
+                <small>Rating:
+                  <span class="rating-container">
+                    <span class="rating-stars">{% include 'rating_stars.html' with rating=repairman.rating|default:0 %}</span>
+                    <span class="rating-number" style="color: #333; margin-left: 5px;">{{ repairman.rating|default:0 }}/5</span>
+                  </span>
+                </small>
               </p>
-              <div class="d-flex justify-content-between">
+              <div class="d-flex justify-content-center gap-2 mt-3">
                 {% if user.is_authenticated and request.session.user_type|default:"client" == "client" %}
-                  <a href="{% url 'rate_repairman' repairman.email %}" class="btn btn-sm btn-outline-primary">
-                    Rate this Repairman
+                  <a href="{% url 'rate_repairman' repairman.email %}" class="btn btn-primary-gradient btn-sm">
+                    Rate
                   </a>
                 {% endif %}
-                <a href="{% url 'repairman_profile' repairman.email %}" class="btn btn-sm btn-outline-secondary">
+                <a href="{% url 'repairman_profile' repairman.email %}" class="btn btn-outline-dark btn-sm">
                   View Profile
                 </a>
               </div>
@@ -45,7 +60,10 @@
       {% endfor %}
     </div>
   {% else %}
-    <p class="text-center">No repairmen found for this category.</p>
+    <div class="text-center py-5">
+      <p class="text-muted fs-5">No repairmen found for this category.</p>
+      <a href="{% url 'repairmen_all' %}" class="btn btn-primary-gradient">Browse All Repairmen</a>
+    </div>
   {% endif %}
 </div>
 {% endblock %}

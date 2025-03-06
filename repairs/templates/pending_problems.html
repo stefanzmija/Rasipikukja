@@ -1,12 +1,23 @@
+{% extends "base.html" %}
+{% load static %}
+
+
 {% for problem in pending_problems %}
-  <div class="card mb-3">
+
+
+  <div class="card modern-card shadow-sm rounded overflow-hidden mb-3">
     <div class="card-body">
-      <h5 class="card-title">{{ problem.name }}</h5>
+      <h5 class="card-title" style="color: #007bff;">{{ problem.name }}</h5>
       <p class="card-text">{{ problem.description }}</p>
       <p class="card-text"><small class="text-muted">Location: {{ problem.location }}</small></p>
       {% if request.session.user_type == 'client' %}
         <p class="card-text">Repairman: {{ problem.repairman_email }}</p>
         <p class="card-text">Contact: {{ problem.contact }}</p>
+      {% endif %}
+
+      <!-- Photo (if available) -->
+      {% if problem.photo_url %}
+        <img src="{{ problem.photo_url }}" alt="Problem Photo" class="img-fluid problem-photo mb-3" style="width: 300px; height: 200px; object-fit: cover; border-radius: 8px;">
       {% endif %}
     </div>
   </div>

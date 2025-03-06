@@ -2,26 +2,30 @@
 {% load static %}
 
 {% block content %}
-<div class="container mt-5">
-  <h2 class="text-center mb-4">My Profile</h2>
-  <form method="post">
-    {% csrf_token %}
-    <!-- Display the name as read-only (assumed set during signup) -->
-    <div class="mb-3">
-      <label for="name" class="form-label">Name:</label>
-      <input type="text" name="name" id="name" class="form-control" value="{{ profile.name }}" readonly>
+<div class="container mt-5 repairmen-container" style="background-color: #f0f8ff; padding: 20px;">
+  <h2 class="text-center mb-4" style="color: #007bff;">My Profile</h2>
+  <div class="card modern-card shadow-sm rounded overflow-hidden">
+    <div class="card-body">
+      <form method="post">
+        {% csrf_token %}
+        <!-- Display the name as read-only (assumed set during signup) -->
+        <div class="mb-3">
+          <label for="name" class="form-label" style="color: #007bff;">Name:</label>
+          <input type="text" name="name" id="name" class="form-control" value="{{ profile.name }}" readonly>
+        </div>
+        <!-- Editable Contact Field -->
+        <div class="mb-3">
+          <label for="contact" class="form-label" style="color: #007bff;">Contact:</label>
+          <input type="text" name="contact" id="contact" class="form-control" value="{{ profile.contact }}">
+        </div>
+        <!-- Editable Description Field -->
+        <div class="mb-3">
+          <label for="description" class="form-label" style="color: #007bff;">Description:</label>
+          <textarea name="description" id="description" class="form-control" rows="4">{{ profile.description }}</textarea>
+        </div>
+        <button type="submit" class="btn btn-primary-gradient">Update Profile</button>
+      </form>
     </div>
-    <!-- Editable Contact Field -->
-    <div class="mb-3">
-      <label for="contact" class="form-label">Contact:</label>
-      <input type="text" name="contact" id="contact" class="form-control" value="{{ profile.contact }}">
-    </div>
-    <!-- Editable Description Field -->
-    <div class="mb-3">
-      <label for="description" class="form-label">Description:</label>
-      <textarea name="description" id="description" class="form-control" rows="4">{{ profile.description }}</textarea>
-    </div>
-    <button type="submit" class="btn btn-primary">Update Profile</button>
-  </form>
+  </div>
 </div>
 {% endblock %}

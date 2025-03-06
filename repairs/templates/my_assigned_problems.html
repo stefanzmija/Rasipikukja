@@ -2,12 +2,12 @@
 {% load static %}
 
 {% block content %}
-<div class="container mt-5">
-  <h2 class="text-center">My Assigned Problems</h2>
+<div class="container mt-5 repairmen-container" style="background-color: #f0f8ff; padding: 20px;">
+  <h2 class="text-center mb-4" style="color: #007bff;">My Assigned Problems</h2>
 
   <!-- Display messages (e.g., success or error messages) -->
   {% if messages %}
-    <div class="alert alert-info">
+    <div class="alert alert-info text-center">
       {% for message in messages %}
         {{ message }}
       {% endfor %}
@@ -15,13 +15,13 @@
   {% endif %}
 
   <!-- List of Assigned Problems -->
-  <div class="row">
+  <div class="row row-cols-1 row-cols-md-2 g-4 card-container">
     {% for problem in assigned_problems %}
-      <div class="col-md-6 mb-4">
-        <div class="card">
+      <div class="col">
+        <div class="card modern-card shadow-sm rounded overflow-hidden">
           <div class="card-body">
             <!-- Problem Details -->
-            <h5 class="card-title">{{ problem.name }}</h5>
+            <h5 class="card-title" style="color: #007bff;">{{ problem.name }}</h5>
             <p class="card-text">{{ problem.description }}</p>
             <p class="card-text"><small class="text-muted">Location: {{ problem.location }}</small></p>
             <p class="card-text"><small class="text-muted">Category: {{ problem.category }}</small></p>
@@ -33,17 +33,17 @@
 
             <!-- Photo (if available) -->
             {% if problem.photo_url %}
-              <img src="{{ problem.photo_url }}" alt="Problem Photo" class="img-fluid mb-3">
+              <img src="{{ problem.photo_url }}" alt="Problem Photo" class="img-fluid problem-photo mb-3" style="width: 300px; height: 200px; object-fit: cover; border-radius: 8px;">
             {% endif %}
 
             <!-- View Problem Button -->
-            <a href="{% url 'problem_detail' problem.problem_id %}" class="btn btn-info">View Problem</a>
+            <a href="{% url 'problem_detail' problem.problem_id %}" class="btn btn-primary-gradient">View Problem</a>
           </div>
         </div>
       </div>
     {% empty %}
       <div class="col-12">
-        <div class="alert alert-info">You have no assigned problems at the moment.</div>
+        <div class="alert alert-info text-center">You have no assigned problems at the moment.</div>
       </div>
     {% endfor %}
   </div>

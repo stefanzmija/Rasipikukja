@@ -1,14 +1,18 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="container mt-5">
-  <h2 class="text-center">Submit Bid</h2>
-  <form method="POST">
-    {% csrf_token %}
-    <div class="mb-3">
-      <label for="amount" class="form-label">Bid Amount:</label>
-      <input type="number" name="amount" id="amount" class="form-control" required>
+<div class="container mt-5 repairmen-container" style="background-color: #f0f8ff; padding: 20px;">
+  <h2 class="text-center mb-4" style="color: #007bff;">Submit Bid</h2>
+  <div class="card modern-card shadow-sm rounded overflow-hidden">
+    <div class="card-body">
+      <form method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label for="amount" class="form-label" style="color: #007bff;">Bid Amount:</label>
+          <input type="number" name="amount" id="amount" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary-gradient">Submit Bid</button>
+      </form>
     </div>
-    <button type="submit" class="btn btn-primary">Submit Bid</button>
-  </form>
+  </div>
 </div>
 {% endblock %}

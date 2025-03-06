@@ -1,0 +1,9 @@
+{% for i in "01234" %}
+  <span class="star" data-rating="{{ i|add:1 }}">
+    {% if forloop.counter <= rating %}
+      ★
+    {% else %}
+      ☆
+    {% endif %}
+  </span>
+{% endfor %}

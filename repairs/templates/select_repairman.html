@@ -1,10 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+  <h2>Select Repairman for {{ problem.name }}</h2>
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %}" role="alert">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+  <form method="POST">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="repairman_email" class="form-label">Select Repairman</label>
+      <select name="repairman_email" id="repairman_email" class="form-control" required>
+        <option value="" disabled selected>Select a repairman</option>
+        {% for bid in bids %}
+          {% with repairman=bid.repairman_email %}
+            <option value="{{ repairman }}">{{ repairman }}</option>
+          {% endwith %}
+        {% endfor %}
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Select Repairman</button>
+  </form>
+</div>
+{% endblock %}

@@ -2,17 +2,25 @@
 {% load static %}
 
 {% block content %}
-<div class="container mt-5">
-  <h2 class="text-center">Problem Details</h2>
+<div class="container mt-5 repairmen-container" style="background-color: #f0f8ff; padding: 20px;">
+  <h2 class="text-center mb-4" style="color: #007bff;">Problem Details</h2>
 
   <!-- Problem Details -->
-  <div class="card mb-4">
+  <div class="card modern-card shadow-sm rounded overflow-hidden mb-4">
     <div class="card-body">
-      <h5 class="card-title">{{ problem.name }}</h5>
+      <h5 class="card-title" style="color: #007bff;">{{ problem.name }}</h5>
       <p class="card-text">{{ problem.description }}</p>
       <p class="card-text"><small class="text-muted">Location: {{ problem.location }}</small></p>
       <p class="card-text"><small class="text-muted">Category: {{ problem.category }}</small></p>
       <p class="card-text"><small class="text-muted">Posted on: {{ problem.created_at }}</small></p>
+
+      <!-- Assigned Indicator (if assigned) -->
+      {% if problem.assigned_repairman %}
+        <p class="card-text">
+          <span class="problem-assigned-checkmark ms-2" style="color: #28a745;">✔</span>
+          <span class="problem-assigned-text ms-1" style="color: #28a745;">Assigned</span>
+        </p>
+      {% endif %}
 
       <!-- Assigned Repairman (if assigned) -->
       {% if assigned_repairman %}
@@ -21,7 +29,7 @@
 
       <!-- Photo (if available) -->
       {% if problem.photo_url %}
-        <img src="{{ problem.photo_url }}" alt="Problem Photo" class="img-fluid mb-3">
+        <img src="{{ problem.photo_url }}" alt="Problem Photo" class="img-fluid problem-photo mb-3" style="width: 300px; height: 200px; object-fit: cover; border-radius: 8px;">
       {% endif %}
 
       <!-- Contact Information (for clients) -->
@@ -32,24 +40,27 @@
   </div>
 
   <!-- Bids Section -->
-  <h3 class="mt-5">Bids</h3>
+  <h3 class="mt-5" style="color: #007bff;">Bids</h3>
   {% if bids %}
     <div class="list-group">
       {% for bid in bids %}
-        <div class="list-group-item">
-          <div class="d-flex justify-content-between align-items-center">
+        <div class="list-group-item modern-list-item shadow-sm rounded mb-2">
+          <div class="d-flex justify-content-between align-items-start">
             <div>
-              <h5 class="mb-1">{{ bid.repairman_email }}</h5>
+              <h5 class="mb-1" style="color: #007bff;">{{ bid.repairman_email }}</h5>
               <p class="mb-1">Amount: ${{ bid.amount }}</p>
-              <small>Submitted on: {{ bid.created_at }}</small>
+              <small class="text-muted">Submitted on: {{ bid.created_at }}</small>
+              {% if assigned_repairman and bid.repairman_email == assigned_repairman %}
+                <span class="bid-selected-checkmark ms-2" style="color: #28a745;">✔</span>
+              {% endif %}
             </div>
             <div>
               <!-- View Repairman Profile Button -->
-              <a href="{% url 'repairman_profile' bid.repairman_email %}" class="btn btn-info btn-sm">View Profile</a>
+              <a href="{% url 'repairman_profile' bid.repairman_email %}" class="btn btn-primary-gradient btn-sm">View Profile</a>
 
               <!-- Select Repairman Button (for clients) -->
               {% if request.session.user_type == 'client' and not assigned_repairman %}
-                <a href="{% url 'select_repairman' problem.id bid.repairman_email %}" class="btn btn-success btn-sm">Select Repairman</a>
+                <a href="{% url 'select_repairman' problem.id bid.repairman_email %}" class="btn btn-primary-gradient btn-sm ms-2">Select Repairman</a>
               {% endif %}
             </div>
           </div>
@@ -57,7 +68,7 @@
       {% endfor %}
     </div>
   {% else %}
-    <div class="alert alert-info">No bids have been submitted for this problem yet.</div>
+    <div class="alert alert-info text-center">No bids have been submitted for this problem yet.</div>
   {% endif %}
 </div>
 {% endblock %}

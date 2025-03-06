@@ -2,40 +2,44 @@
 {% load static %}
 
 {% block content %}
-<div class="container mt-5">
+<div class="container mt-5 repairmen-container" style="background-color: #f0f8ff; padding: 20px;">
   {% if profile %}
-    <div class="card shadow-sm mb-4">
+    <div class="card modern-card shadow-sm rounded overflow-hidden mb-4">
       <div class="card-body">
-        <h2 class="card-title text-center">{{ profile.name|default:profile.email }}</h2>
+        <h2 class="card-title text-center" style="color: #007bff;">{{ profile.name|default:profile.email }}</h2>
         <p class="text-center">
-          <strong>Contact:</strong> {{ profile.contact|default:"Not provided" }}<br>
-          <strong>Category:</strong> {{ profile.repair_category|default:"N/A" }}<br>
-          <strong>Rating:</strong> {{ profile.rating|default:"0" }} / 5.0
+          <strong style="color: #007bff;">Contact:</strong> {{ profile.contact|default:"Not provided" }}<br>
+          <strong style="color: #007bff;">Category:</strong> {{ profile.repair_category|default:"N/A" }}<br>
+          <strong style="color: #007bff;">Rating:</strong> {{ profile.rating|default:"0" }} / 5.0
         </p>
         <p class="card-text">
-          <strong>Description:</strong><br>
+          <strong style="color: #007bff;">Description:</strong><br>
           {{ profile.description|default:"No description available." }}
         </p>
       </div>
     </div>
   {% else %}
-    <p class="text-center">Repairman not found.</p>
+    <p class="text-center" style="color: #007bff;">Repairman not found.</p>
   {% endif %}
 
-  <h3 class="mt-4">Reviews</h3>
+  <h3 class="mt-4" style="color: #007bff;">Reviews</h3>
   {% if reviews %}
     <div class="list-group">
       {% for review in reviews %}
-        <div class="list-group-item">
-          <strong>Rating:</strong> {{ review.rating }} / 5<br>
-          <strong>Comment:</strong> {{ review.comment|default:"No comment" }}<br>
-          <small>By: {{ review.client_email }}</small><br>
-          <small>On: {{ review.created_at }}</small>
+        <div class="list-group-item modern-list-item shadow-sm rounded mb-2">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <strong style="color: #007bff;">Rating:</strong> {{ review.rating }} / 5<br>
+              <strong style="color: #007bff;">Comment:</strong> {{ review.comment|default:"No comment" }}<br>
+              <small class="text-muted">By: {{ review.client_email }}</small><br>
+              <small class="text-muted">On: {{ review.created_at }}</small>
+            </div>
+          </div>
         </div>
       {% endfor %}
     </div>
   {% else %}
-    <p class="text-center">No reviews available.</p>
+    <p class="text-center" style="color: #007bff;">No reviews available.</p>
   {% endif %}
 </div>
 {% endblock %}
