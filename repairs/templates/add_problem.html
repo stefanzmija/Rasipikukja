@@ -1,52 +1,54 @@
 {% extends "base.html" %}
 {% load static %}
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+{% endblock %}
 
 {% block content %}
-<div class="container mt-5 repairmen-container" style="background-color: #f0f8ff; padding: 20px;">
-  <h2 class="text-center mb-4" style="color: #007bff;">Add a New Problem</h2>
+<div class="container mt-5">
+  <h2 class="text-center mb-5 text-uppercase font-weight-bold" style="color: #201424;">Add a Problem</h2>
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" class="form-control" id="name" name="name" required>
+    </div>
+    <div class="form-group">
+      <label for="contact">Contact</label>
+      <input type="text" class="form-control" id="contact" name="contact" required>
+    </div>
+    <div class="form-group">
+      <label for="location">Location</label>
+      <input type="text" class="form-control" id="location" name="location" required>
+    </div>
+    <div class="form-group">
+      <label for="caption">Caption</label>
+      <input type="text" class="form-control" id="caption" name="caption" required>
+    </div>
+    <div class="form-group">
+      <label for="description">Description (Optional)</label>
+      <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+    </div>
+    <div class="form-group">
+      <label for="category">Category</label>
+      <select class="form-control" id="category" name="category" required>
+        {% for category in categories %}
+          <option value="{{ category }}">{{ category }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="photo">Photo (PNG only)</label>
+      <input type="file" class="form-control-file" id="photo" name="photo" accept=".png">
+    </div>
+    <button type="submit" class="btn btn-primary-gradient mt-3">Submit Problem</button>
+  </form>
   {% if messages %}
     {% for message in messages %}
-      <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} text-center">
+      <div class="alert alert-{{ message.tags }} mt-3" role="alert">
         {{ message }}
       </div>
     {% endfor %}
   {% endif %}
-  <div class="card modern-card shadow-sm rounded overflow-hidden">
-    <div class="card-body">
-      <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        <div class="mb-3">
-          <label for="name" class="form-label" style="color: #007bff;">Your Name:</label>
-          <input type="text" name="name" id="name" class="form-control" required>
-        </div>
-        <div class="mb-3">
-          <label for="contact" class="form-label" style="color: #007bff;">Contact Info:</label>
-          <input type="text" name="contact" id="contact" class="form-control" required>
-        </div>
-        <div class="mb-3">
-          <label for="location" class="form-label" style="color: #007bff;">Location:</label>
-          <input type="text" name="location" id="location" class="form-control" required>
-        </div>
-        <div class="mb-3">
-          <label for="category" class="form-label" style="color: #007bff;">Category:</label>
-          <select name="category" id="category" class="form-control" required>
-            <option value="" disabled selected>Select a category</option>
-            {% for category in categories %}
-              <option value="{{ category }}">{{ category }}</option>
-            {% endfor %}
-          </select>
-        </div>
-        <div class="mb-3">
-          <label for="description" class="form-label" style="color: #007bff;">Problem Description:</label>
-          <textarea name="description" id="description" class="form-control" rows="3"></textarea>
-        </div>
-        <div class="mb-3">
-          <label for="photo" class="form-label" style="color: #007bff;">Photo (PNG only):</label>
-          <input type="file" name="photo" id="photo" class="form-control" accept="image/png">
-        </div>
-        <button type="submit" class="btn btn-primary-gradient">Submit Problem</button>
-      </form>
-    </div>
-  </div>
 </div>
 {% endblock %}

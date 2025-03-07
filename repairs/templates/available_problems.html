@@ -1,65 +1,61 @@
 {% extends "base.html" %}
 {% load static %}
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+{% endblock %}
 
 {% block content %}
-<div class="container mt-5 repairmen-container" style="background-color: #f0f8ff; padding: 20px;">
-  <h2 class="text-center mb-4" style="color: #007bff;">Available Problems</h2>
+<div class="container mt-5" style="background-color: #f0f8ff;">
+  <h2 class="text-center mb-5 text-uppercase font-weight-bold" style="color: #201424;">Available Problems</h2>
 
-  <!-- Display messages (e.g., success or error messages) -->
-  {% if messages %}
-    <div class="alert alert-info text-center">
-      {% for message in messages %}
-        {{ message }}
-      {% endfor %}
+  <!-- Search Form (Updated Placeholder) -->
+  <form method="GET" action="{% url 'available_problems' %}" class="mb-4">
+    <div class="input-group">
+      <input type="text" name="search" class="form-control" placeholder="Search problems by caption..." value="{{ request.GET.search }}">
+      <button type="submit" class="btn btn-primary-gradient">Search</button>
     </div>
-  {% endif %}
+  </form>
 
-  <!-- List of Available Problems -->
-  <div class="row row-cols-1 row-cols-md-2 g-4 card-container">
-    {% for problem in problems %}
-      <div class="col">
-        <div class="card modern-card shadow-sm rounded overflow-hidden">
-          <div class="card-body">
-            <!-- Problem Details -->
-            <h5 class="card-title" style="color: #007bff;">{{ problem.name }}</h5>
-            <p class="card-text">{{ problem.description }}</p>
-            <p class="card-text"><small class="text-muted">Location: {{ problem.location }}</small></p>
-            <p class="card-text"><small class="text-muted">Category: {{ problem.category }}</small></p>
-            <p class="card-text"><small class="text-muted">Posted on: {{ problem.created_at }}</small></p>
-
-            <!-- Assigned Indicator (if assigned) -->
-            {% if problem.assigned_repairman %}
-              <p class="card-text">
-                <span class="problem-assigned-checkmark ms-2" style="color: #28a745;">✔</span>
-                <span class="problem-assigned-text ms-1" style="color: #28a745;">Assigned</span>
-              </p>
-            {% endif %}
-
-            <!-- Photo (if available) -->
+  {% if problems %}
+    <div class="row row-cols-1 row-cols-md-3 g-4 card-container">
+      {% for problem in problems %}
+        <div class="col card-item">
+          <div class="card modern-card shadow-sm pb-2 rounded overflow-hidden">
+            <!-- Display Photo if Available -->
             {% if problem.photo_url %}
-              <img src="{{ problem.photo_url }}" alt="Problem Photo" class="img-fluid problem-photo mb-3" style="width: 300px; height: 200px; object-fit: cover; border-radius: 8px;">
+              <div class="card-img-top" style="
+                background-image: url('{{ problem.photo_url }}');
+                background-size: cover;
+                background-position: center;
+                height: 200px;
+              "></div>
+            {% else %}
+              <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                <p class="text-muted mb-0">No photo available</p>
+              </div>
             {% endif %}
+            <div class="card-body text-center">
+              <h5 class="card-title" style="color: #201424;">{{ problem.name }}</h5>
+              <h4>{{ problem.caption|default:"No caption" }}</h4>  <!-- Show caption instead of description -->
+              <p class="card-text text-muted">
 
-            <!-- View Problem Button -->
-            <a href="{% url 'problem_detail' problem.id %}" class="btn btn-primary-gradient">View Problem</a>
+                <small>Category: {{ problem.category|default:"N/A"|capfirst }}</small><br />
+                <small>Location: {{ problem.location|default:"N/A" }}</small><br />
 
-            <!-- Bid Button (for repairmen) -->
-            {% if request.session.user_type == 'repairman' and not problem.assigned_repairman %}
-              <a href="{% url 'submit_bid' problem.id %}" class="btn btn-primary-gradient ms-2">Submit Bid</a>
-            {% endif %}
-
-            <!-- Contact Information (for clients) -->
-            {% if request.session.user_type == 'client' %}
-              <p class="card-text"><small class="text-muted">Contact: {{ problem.contact }}</small></p>
-            {% endif %}
+              </p>
+              <div class="d-flex justify-content-center gap-2 mt-3">
+                <a href="{% url 'problem_detail' problem.id %}" class="btn btn-primary-gradient btn-sm">View Details</a>
+                <a href="{% url 'submit_bid' problem.id %}" class="btn btn-outline-dark btn-sm">Submit Bid</a>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    {% empty %}
-      <div class="col-12">
-        <div class="alert alert-info text-center">No problems available at the moment.</div>
-      </div>
-    {% endfor %}
-  </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="text-center py-5">
+      <p class="text-muted fs-5">No available problems found.</p>
+    </div>
+  {% endif %}
 </div>
 {% endblock %}

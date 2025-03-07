@@ -6,7 +6,15 @@
 
 {% block content %}
 <div class="container mt-5 repairmen-container" style="background-color: #f0f8ff;">
-  <h2 class="text-center mb-5 text-uppercase font-weight-bold" style="color: #007bff;">Find Your Repairmen</h2>
+  <h2 class="text-center mb-5 text-uppercase font-weight-bold" style="color: #201424;">Find Your Repairmen</h2>
+
+  <!-- Add Search Form -->
+  <form method="GET" action="{% url 'repairmen_all' %}" class="mb-4">
+    <div class="input-group">
+      <input type="text" name="search" class="form-control" placeholder="Search repairmen by name..." value="{{ request.GET.search }}">
+      <button type="submit" class="btn btn-primary-gradient">Search</button>
+    </div>
+  </form>
 
   <!-- Category Filter Options -->
   <div class="text-center mb-5 filter-buttons">
@@ -30,13 +38,12 @@
               background-image: url('{% static 'images/' %}{{ repairman.repair_category }}.jpg');
               background-size: cover;
               background-position: center;
-              height: 20px;
-
+              height: 20px; /* Adjusted height for better visibility */
             "></div>
             <div class="card-body text-center">
-              <h5 class="card-title" style="color: #007bff;">{{ repairman.name|default:repairman.email }}</h5>
+              <h5 class="card-title" style="color: #201424;">{{ repairman.name|default:repairman.email }}</h5>
               <p class="card-text text-muted">
-                <small>Category: {{ repairman.repair_category|default:"N/A"|capfirst  }}</small><br />
+                <small>Category: {{ repairman.repair_category|default:"N/A"|capfirst }}</small><br />
                 <small>Rating:
                   <span class="rating-container">
                     <span class="rating-stars">{% include 'rating_stars.html' with rating=repairman.rating|default:0 %}</span>

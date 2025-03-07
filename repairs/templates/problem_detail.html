@@ -48,7 +48,7 @@
           <div class="d-flex justify-content-between align-items-start">
             <div>
               <h5 class="mb-1" style="color: #007bff;">{{ bid.repairman_email }}</h5>
-              <p class="mb-1">Amount: ${{ bid.amount }}</p>
+              <p class="mb-1">Amount: {{ bid.amount }} ден.</p>
               <small class="text-muted">Submitted on: {{ bid.created_at }}</small>
               {% if assigned_repairman and bid.repairman_email == assigned_repairman %}
                 <span class="bid-selected-checkmark ms-2" style="color: #28a745;">✔</span>

@@ -1,20 +1,16 @@
-import os
-import time
-import tempfile
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.conf import settings
-from django.contrib.auth import get_user_model
-from django.contrib.auth import login, logout
+from django.contrib.auth import get_user_model, login, logout
 from .supabase_client import supabase
 import shutil
 from django.http import HttpResponse
 import uuid
-
-
-from django.contrib.auth import get_user_model
-
+import time
+import tempfile
+import os
 User = get_user_model()
+
 def home_view(request):
     services = [
         {"name": "Cleaner", "icon_url": "/static/icons/cleaning.png"},
@@ -27,49 +23,42 @@ def home_view(request):
         {"name": "Gardener", "icon_url": "/static/icons/gardening.png"},
     ]
     return render(request, "home.html", {"services": services})
+
 def custom_signup_view(request):
     if request.method == 'POST':
         try:
-            # Retrieve form data
             name = request.POST.get('name')
             email = request.POST.get('email')
             password = request.POST.get('password')
-            user_type = request.POST.get('user_type')  # 'client' or 'repairman'
+            user_type = request.POST.get('user_type')
             repair_category = request.POST.get('repair_category') if user_type == 'repairman' else None
 
-            # Validate required fields
             if not name or not email or not password or not user_type:
                 messages.error(request, "All fields are required.")
                 return redirect('signup')
 
-            # Validate user_type
             if user_type not in ['client', 'repairman']:
                 messages.error(request, "Invalid user type.")
                 return redirect('signup')
 
-            # Sign up the user in Supabase Auth
             auth_response = supabase.auth.sign_up({
                 "email": email,
                 "password": password
             })
 
             if auth_response.user:
-                # Build profile data for insertion into the 'profiles' table
                 profile_data = {
                     "email": email,
                     "name": name,
                     "user_type": user_type,
                 }
-
-                # Add repair_category only if the user is a repairman
                 if user_type == 'repairman':
                     if not repair_category:
                         messages.error(request, "Repair category is required for repairmen.")
                         return redirect('signup')
                     profile_data["repair_category"] = repair_category
-                    profile_data["rating"] = 0  # Initialize rating for repairmen
+                    profile_data["rating"] = 0
 
-                # Insert profile data into Supabase
                 insert_response = supabase.table("profiles").insert(profile_data).execute()
                 print("Profile insert response:", insert_response)
 
@@ -98,12 +87,11 @@ def custom_login_view(request):
             user.backend = 'django.contrib.auth.backends.ModelBackend'
             login(request, user)
 
-            # Fetch the user's profile to retrieve user_type.
             profile_response = supabase.table("profiles").select("user_type").eq("email", email).execute()
             if profile_response.data:
                 request.session['user_type'] = profile_response.data[0]['user_type']
             else:
-                request.session['user_type'] = "client"  # Default fallback.
+                request.session['user_type'] = "client"
             messages.success(request, "Logged in successfully!")
             return redirect('home')
         else:
@@ -118,16 +106,26 @@ def custom_logout_view(request):
 def repairmen_view(request, category=None):
     """
     Displays a list of repairmen. If 'category' is provided, filters by that category.
+    If 'search' is provided in GET, filters by name or email with more precise matching.
     Passes 'user_type' into the template so only clients see the rate button.
     """
-    if category:
-        response = supabase.table("profiles").select("*") \
-            .eq("user_type", "repairman") \
-            .eq("repair_category", category).execute()
-    else:
-        response = supabase.table("profiles").select("*") \
-            .eq("user_type", "repairman").execute()
+    # Get the search query from the GET parameters
+    search_query = request.GET.get('search', '').strip().lower()
+
+    # Initial query for all repairmen
+    response = supabase.table("profiles").select("*").eq("user_type", "repairman").execute()
     repairmen = response.data if response.data else []
+
+    # Apply category filter if provided
+    if category:
+        repairmen = [r for r in repairmen if r.get('repair_category', '').lower() == category.lower()]
+
+    # Apply search filter if a query exists
+    if search_query:
+        repairmen = [r for r in repairmen if
+                     any(word.lower() == search_query for word in (r.get('name', '').lower() or '').split()) or
+                     search_query in (r.get('email', '').lower() or '')]
+
     # Get user_type from session (defaulting to 'client')
     user_type = request.session.get('user_type', 'client')
     return render(request, "repairmen.html", {
@@ -136,16 +134,11 @@ def repairmen_view(request, category=None):
         "user_type": user_type,
     })
 
-
 def rate_repairman_view(request, repairman_email):
-    """
-    Allows a client to submit a review for a repairman.
-    """
     if request.method == "POST":
         rating = request.POST.get("rating")
-        comment = request.POST.get("comment", "")  # Optional field
+        comment = request.POST.get("comment", "")
 
-        # Validate rating (ensure it's between 1 and 5)
         try:
             rating = int(rating)
             if rating < 1 or rating > 5:
@@ -155,8 +148,6 @@ def rate_repairman_view(request, repairman_email):
             messages.error(request, "Invalid rating format.")
             return redirect("rate_repairman", repairman_email=repairman_email)
 
-        # Insert review into Supabase 'reviews' table.
-        # Your table has columns: id (uuid), repairman_email, client_email, rating, comment, created_at
         response = supabase.table("reviews").insert({
             "repairman_email": repairman_email,
             "client_email": request.user.email,
@@ -164,7 +155,6 @@ def rate_repairman_view(request, repairman_email):
             "comment": comment,
         }).execute()
 
-        # Instead of accessing response.status_code, safely get error attribute.
         response_error = getattr(response, "error", None)
         if response_error is None:
             messages.success(request, "Review submitted successfully!")
@@ -174,7 +164,6 @@ def rate_repairman_view(request, repairman_email):
             print("Insert error:", response_error)
             return redirect("rate_repairman", repairman_email=repairman_email)
 
-    # For GET requests, render the rate_repairman.html template.
     return render(request, "rate_repairman.html", {"repairman_email": repairman_email})
 
 def repairman_profile_view(request, repairman_email):
@@ -214,34 +203,28 @@ def my_profile_view(request):
     context = {"profile": profile}
     return render(request, "my_profile.html", context)
 def add_problem_view(request):
-    # Ensure user is logged in
     if not request.user.is_authenticated:
         messages.error(request, "You must be logged in to add a problem.")
         return redirect("login")
 
-    # Only allow clients to add problems
     if request.session.get("user_type", "client") != "client":
         messages.error(request, "Only clients can add problems.")
         return redirect("home")
 
     if request.method == "POST":
-        # Retrieve and validate form data
         name = request.POST.get("name", "").strip()
         contact = request.POST.get("contact", "").strip()
         location = request.POST.get("location", "").strip()
+        caption = request.POST.get("caption", "").strip()  # New caption field
         description = request.POST.get("description", "").strip()
         category = request.POST.get("category", "").strip()
         client_email = request.user.email
 
-        # Basic validation
-        if not all([name, contact, location, category]):
+        if not all([name, contact, location, caption, category]):  # Include caption in validation
             messages.error(request, "All fields except description and photo are required.")
             return redirect("add_problem")
 
-        # Default photo_url to empty
         photo_url = ""
-
-        # Process file upload if a photo is attached
         if "photo" in request.FILES:
             photo_file = request.FILES["photo"]
             if not photo_file.name.lower().endswith(".png"):
@@ -280,18 +263,17 @@ def add_problem_view(request):
                 messages.error(request, f"Error retrieving public URL: {str(e)}")
                 return redirect("add_problem")
 
-        # Build problem data
         problem_data = {
             "client_email": client_email,
             "name": name,
             "contact": contact,
             "location": location,
+            "caption": caption,  # Add caption to problem data
             "description": description if description else None,
             "photo_url": photo_url if photo_url else None,
             "category": category,
         }
 
-        # Insert into Supabase "problems" table
         try:
             insert_response = supabase.table("problems").insert(problem_data).execute()
             if not insert_response.data:
@@ -302,11 +284,11 @@ def add_problem_view(request):
             messages.error(request, f"Error submitting problem: {str(e)}")
             return redirect("add_problem")
 
-    # For GET request, provide category options
     categories = [
         "Cleaner", "Handyman", "Mover", "Painter", "Plumber", "Electrician", "Assembler", "Gardener"
     ]
     return render(request, "add_problem.html", {"categories": categories})
+
 def available_problems_view(request):
     if not request.user.is_authenticated:
         messages.error(request, "You must be logged in to view available problems.")
@@ -315,14 +297,24 @@ def available_problems_view(request):
         messages.error(request, "Only repairmen can view available problems.")
         return redirect("home")
 
+    # Get the search query from the GET parameters
+    search_query = request.GET.get('search', '').strip().lower()
+
+    # Fetch all problems
     problems_response = supabase.table("problems").select("*").order("created_at", desc=False).execute()
     problems = problems_response.data if problems_response.data else []
+
+    # Apply search filter if a query exists (search in description)
+    if search_query:
+        problems = [p for p in problems if
+                    any(word.lower() == search_query for word in (p.get('description', '').lower() or '').split())]
 
     # Hide contact information for repairmen
     for problem in problems:
         problem.pop('contact', None)
 
     return render(request, "available_problems.html", {"problems": problems})
+
 def problem_detail_view(request, problem_id):
     if not request.user.is_authenticated:
         messages.error(request, "You must be logged in to view problem details.")
@@ -331,7 +323,6 @@ def problem_detail_view(request, problem_id):
         messages.error(request, "Only clients and repairmen can view problem details.")
         return redirect("home")
 
-    # Fetch the problem by its ID
     problem_response = supabase.table("problems").select("*").eq("id", problem_id).execute()
     if not problem_response.data:
         messages.error(request, "Problem not found.")
@@ -339,15 +330,12 @@ def problem_detail_view(request, problem_id):
 
     problem = problem_response.data[0]
 
-    # Fetch bids for the problem
     bids_response = supabase.table("bids").select("*").eq("problem_id", problem_id).execute()
     bids = bids_response.data if bids_response.data else []
 
-    # Fetch assigned repairman (if any)
     assigned_response = supabase.table("assigned_problems").select("repairman_email").eq("problem_id", problem_id).execute()
     assigned_repairman = assigned_response.data[0]["repairman_email"] if assigned_response.data else None
 
-    # Pass the problem, bids, and assigned repairman data to the template
     return render(request, "problem_detail.html", {
         "problem": problem,
         "bids": bids,
@@ -366,7 +354,6 @@ def submit_bid_view(request, problem_id):
         amount = request.POST.get("amount")
         repairman_email = request.user.email
 
-        # Insert bid into the `bids` table
         bid_data = {
             "problem_id": problem_id,
             "repairman_email": repairman_email,
@@ -378,8 +365,8 @@ def submit_bid_view(request, problem_id):
         messages.success(request, "Your bid has been submitted successfully!")
         return redirect("available_problems")
 
-    # For GET request, render the bid form
     return render(request, "submit_bid.html", {"problem_id": problem_id})
+
 def select_repairman_view(request, problem_id, repairman_email):
     if not request.user.is_authenticated:
         messages.error(request, "You must be logged in to select a repairman.")
@@ -388,7 +375,6 @@ def select_repairman_view(request, problem_id, repairman_email):
         messages.error(request, "Only clients can select repairmen.")
         return redirect("home")
 
-    # Fetch the problem by its ID
     problem_response = supabase.table("problems").select("*").eq("id", problem_id).execute()
     if not problem_response.data:
         messages.error(request, "Problem not found.")
@@ -396,7 +382,6 @@ def select_repairman_view(request, problem_id, repairman_email):
 
     problem = problem_response.data[0]
 
-    # Move the problem to the `assigned_problems` table
     assigned_problem_data = {
         "problem_id": problem_id,
         "client_email": problem["client_email"],
@@ -410,7 +395,6 @@ def select_repairman_view(request, problem_id, repairman_email):
         messages.error(request, f"Error assigning problem: {str(e)}")
         return redirect("available_problems")
 
-    # Delete the problem from the `problems` table
     try:
         delete_response = supabase.table("problems").delete().eq("id", problem_id).execute()
         print("Problem delete response:", delete_response)
@@ -430,10 +414,8 @@ def pending_problems_view(request):
     user_type = request.session.get('user_type', 'client')
 
     if user_type == 'client':
-        # Fetch problems assigned to the client
         response = supabase.table("assigned_problems").select("*").eq("client_email", user_email).execute()
     else:
-        # Fetch problems assigned to the repairman
         response = supabase.table("assigned_problems").select("*").eq("repairman_email", user_email).execute()
 
     pending_problems = response.data if response.data else []
@@ -447,7 +429,6 @@ def my_problems_view(request):
         messages.error(request, "Only clients can view their problems.")
         return redirect("home")
 
-    # Fetch problems posted by the logged-in client
     client_email = request.user.email
     problems_response = supabase.table("problems").select("*").eq("client_email", client_email).execute()
     problems = problems_response.data if problems_response.data else []
@@ -462,12 +443,10 @@ def my_assigned_problems_view(request):
         messages.error(request, "Only repairmen can view their assigned problems.")
         return redirect("home")
 
-    # Fetch problems assigned to the logged-in repairman
     repairman_email = request.user.email
     assigned_response = supabase.table("assigned_problems").select("*").eq("repairman_email", repairman_email).execute()
     assigned_problems = assigned_response.data if assigned_response.data else []
 
-    # Fetch additional details for each assigned problem
     for problem in assigned_problems:
         problem_id = problem["problem_id"]
         problem_details_response = supabase.table("problems").select("*").eq("id", problem_id).execute()

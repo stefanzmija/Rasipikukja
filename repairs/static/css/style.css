@@ -13,7 +13,7 @@ body {
   font-weight: 700;
 }
 
-/* Modern Navbar Styling (Blue Theme with Montserrat Font) */
+/* Modern Navbar Styling (Blue Theme with Roboto Font) */
 .navbar {
   padding: 1rem 0;
   background-color: #ffffff !important; /* White background */
@@ -22,8 +22,9 @@ body {
 }
 
 .navbar-brand-text, .navbar-link {
-  font-family: 'Montserrat', sans-serif; /* Bold, modern font */
-  font-weight: 700; /* Bold weight for emphasis */
+  font-family: 'Roboto', sans-serif; /* Changed to Roboto for consistency */
+color: #007bff !important;
+  font-weight: 800; /* Reduced from 900 to 800 for less extreme boldness */
 }
 
 .navbar-brand {
@@ -41,11 +42,38 @@ body {
   color: #007bff !important; /* Blue for links */
   padding: 0.5rem 1rem;
   transition: color 0.3s ease, transform 0.3s ease;
+  position: relative;
+}
+
+.navbar-link::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 0;
+  height: 2px;
+  background-color: #007bff;
+  transition: width 0.3s ease, left 0.3s ease;
 }
 
 .navbar-link:hover {
   color: #0056b3 !important; /* Darker blue on hover */
-  transform: translateY(-2px); /* Slight lift on hover */
+  transform: translateY(-2px);
+}
+
+.navbar-link:hover::after {
+  width: 100%;
+  left: 0;
+}
+
+/* Increased specificity to override Bootstrap */
+.nav-item .navbar-link {
+  font-weight: 800 !important; /* Reduced from 900 to 800 */
+  color: #007bff !important;
+}
+
+.nav-item .navbar-link:hover {
+  color: #0056b3 !important;
 }
 
 .navbar-toggler {
@@ -452,26 +480,4 @@ body {
 .comment-box:focus {
   border-color: #007bff;
   outline: none;
-}
-
-.navbar-link {
-    font-size: 1rem;
-    color: #007bff !important;
-    padding: 0.5rem 1rem;
-    transition: color 0.3s ease, transform 0.3s ease;
-    position: relative;
-}
-.navbar-link::after {
-    content: "";
-    position: absolute;
-    left: 50%;
-    bottom: 0;
-    width: 0;
-    height: 2px;
-    background-color: #007bff;
-    transition: width 0.3s ease, left 0.3s ease;
-}
-.navbar-link:hover::after {
-    width: 100%;
-    left: 0;
 }
