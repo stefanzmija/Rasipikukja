@@ -140,13 +140,18 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 
-STATIC_URL = "/static/"
-STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+# Define where the static files should be served from
+STATIC_URL = '/static/'
 
+# Define the directory where static files should be collected (for production)
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# If you're still in development, you can use this instead to serve static files in debug mode
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-
